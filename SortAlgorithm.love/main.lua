@@ -1,9 +1,10 @@
 --[[ 
 
 Sorting Algorithm Animation - showing with graphs how sorting algorithms works
-Using Love2D engine for games
++Using Love2D engine for games
 
-	this version do not contain every algorithm - only : bubble sort
+demo < --
+
 by GusPassos]]--
 
 name = "Sorting Algorithm Animation"
