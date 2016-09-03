@@ -5,7 +5,7 @@ local M = {}
 mainVec = {}
 
 -- each algorithm index to draw the square
-index = {1, 1, 1, 1, 1, 1, 1, 1, 1}
+index = {1, 1, 1}
 
 -- vector for each algorithm
 bubbleVec = {}
@@ -17,11 +17,11 @@ sVar = {1, 1}
 iVar = {1, 1}
 
 -- size of the table
-vecSize = 35
+vecSize = 40
 -- square text alpha value
 alphaII = 0
 -- Only runs when playingAnimations is true
-function sortingAnimation(x, y, algorithm)
+function sortingAnimation(x, algorithm)
 
 	-- increase the alpha
 	if alphaII < 255 then
@@ -30,24 +30,17 @@ function sortingAnimation(x, y, algorithm)
 	
 	-- graph base
 	love.graphics.setColor(0, 0, 0, alphaII)	
-	love.graphics.rectangle("fill", x + 10, y + 110, 210, 5)
-	
-	if maxtemp == nil then
-		maxtemp = bubbleVec[1]
-	end
-	
-	love.graphics.print(maxtemp)
-
+	love.graphics.rectangle("fill", x + 10, 350, 200, 5)
 	
 	-- drawing bars for every algorithm selected
 	if algorithm == 1 then
-		drawBars(bubbleVec, index[1], x, y)
+		drawBars(bubbleVec, index[1], x)
 		bubbleSort(bubbleVec, 1)
 	elseif algorithm == 2 then
-		drawBars(selectionVec, index[2], x, y)
+		drawBars(selectionVec, index[2], x)
 		selectionSort(selectionVec, 2)
 	elseif algorithm == 3 then
-		drawBars(insertionVec, index[3], x, y)
+		drawBars(insertionVec, index[3], x)
 		insertionSort(insertionVec, 3)
 	end
 	
@@ -55,15 +48,15 @@ function sortingAnimation(x, y, algorithm)
 end
 
 -- drawing one bar for each value in the vector	
-function drawBars(vector, index, x, y)
+function drawBars(vector, index, x)
 	for i = 1, #vector do
 		love.graphics.setColor(100, 0, 0, alphaII)
-		love.graphics.rectangle("fill", x + 5 + i * 6, y + 110 - vector[i] * 2, 5, 2 + vector[i] * 2)
+		love.graphics.rectangle("fill", x + 5 + i * 5, 350 - vector[i] * 2, 3, 2 + vector[i] * 2)
 	end
 	
 	-- draw red square to show which number is being compared
 	love.graphics.setColor(255, 0, 0, alphaII)
-	love.graphics.rectangle("fill", x + 5 + index * 6, y + 120, 5, 5)
+	love.graphics.rectangle("fill", x + 5 + index * 5, 360, 5, 5)
 end
 
 -- fill the vect with random numbers 
@@ -104,7 +97,7 @@ function bubbleSort (vec, ind)
 	
 	-- bVar[2] is equal to y and bVar[1] to x. 
 
-	if bVar[2] < #vec - 1 then
+	if bVar[2] < #vec - 1 - (bVar[1]) then
 		bVar[2] = bVar[2] + 1
 	elseif bVar[1] < #vec then
 		bVar[2] = 1
@@ -139,6 +132,8 @@ function selectionSort (vec, ind)
 		sVar[1] = sVar[1] + 1
 		mi = sVar[1]
 		sVar[2] = sVar[1] + 1
+	else
+		finishedAnimation = true
 	end
 	
 	index[ind] = sVar[2]
@@ -182,10 +177,11 @@ function insertionSort (vec, ind)
 			iVar[1] = iVar[1] + 1
 			iVar[2] = iVar[1] - 1
 			iTemp = vec[iVar[1]]
+		else
+			finishedAnimation = true
 		end
 	end
 end
-	
 
 -- reset every var from this file
 function reset()
@@ -200,6 +196,7 @@ function reset()
 	for i = 1, 2 do
 		bVar[i] = 1
 		sVar[i] = 1
+		iVar[i] = 1
 	end
 	
 	-- reset the alpha

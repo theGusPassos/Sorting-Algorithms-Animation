@@ -3,9 +3,10 @@
 Sorting Algorithm Animation - showing with graphs how sorting algorithms works
 +Using Love2D engine for games
 
-demo < --
 
-by GusPassos]]--
+by GusPassos
+
+]]--
 
 name = "Sorting Algorithm Animation"
 
@@ -27,12 +28,10 @@ playingAnimations = false
 alpha = 255
 
 -- algorithms in this program
-algorithm = {"Bubble Sort", "Selection Sort", "Insertion Sort", "x", "x", "x", "x", "x", "x"}
+algorithm = {"Bubble Sort", "Selection Sort", "Insertion Sort"}
 
 -- which one is already selected
-algorithmSelected = {false, false, false,
-					false, false, false,
-					false, false, false}
+algorithmSelected = {false, false, false}
 					
 
 -- if every coroutine is ended
@@ -73,27 +72,25 @@ end
 function clickToReset()
 	-- back retangle
 	love.graphics.setColor(0, 0, 0, 200)
-	love.graphics.rectangle("fill", (width / 2) - 200, height / 2 - 20, 400, 20)
+	love.graphics.rectangle("fill", (width / 2) - 200, height / 2 + 100, 400, 20)
 	
 	-- text
 	love.graphics.setColor(255, 255, 255)		love.graphics.setFont(madeByFont)
-	love.graphics.printf("click to reset", (width / 2) - 200, height / 2 - 20, 400, "center")
+	love.graphics.printf("click to reset", (width / 2) - 200, height / 2 + 100, 400, "center")
 end
 
 -- if a mouse event happen, this will catch the mouse position and make the tests
 function love.mousepressed(x, y, button)
 	
+	
+	-- if any algorithm is choosen
 	if not playingAnimations then
-		-- if any of the algorithms is choosen
-		for i = 0, (#algorithm / 3) - 1 do
-			for j = 0, (#algorithm / 3) - 1 do
-				-- using selection buttons
-				love.graphics.setColor(0, 0, 0)
-				if x > 40 + i * 240 and x < 280 + i * 240 and y > 140 + j * 150 and y < 280 + j * 150 then
-					algorithmSelected[(j + i * 3) + 1] = not algorithmSelected[(j + i * 3) + 1]
-				end
+		for i = 0, #algorithm - 1 do
+			love.graphics.setColor(0, 0, 0)
+			if x > 40 + i * 250 and x < 260 + i * 250 and y > (height/2) - 75 and y < (height/2) + 75 then
+				algorithmSelected[i] = not algorithmSelected[i]
 			end
-		end -- end for
+		end
 	end
 	
 	-- select all button
@@ -196,40 +193,36 @@ function drawOptions()
 	-- algorithms title font 
 	love.graphics.setFont(buttonFont)
 	
-	for i = 0, (#algorithm / 3) - 1 do
-		for j = 0, (#algorithm / 3) - 1 do
-			
-			-- animation
-			love.graphics.setColor(0, 0, 0)
-			if x > 40 + i * 240 and x < 280 + i * 240 and y > 140 + j * 150 and y < 280 + j * 150 then
-				love.graphics.rectangle("line", 40 + i * 240, 140 + j * 150, 230, 140, 2, 2)
-			end
-			
-			-- show which algorithm is selected
-			if algorithmSelected[(j + i * 3) + 1] == true then
-				love.graphics.rectangle("line", 40 + i * 240, 140 + j * 150, 230, 140, 2, 2)
-			end
-			
-			-- rect where the title and the graph will be
-			love.graphics.setColor(200, 200, 200)
-			love.graphics.rectangle("fill", 40 + i * 240, 140 + j * 150, 230, 140, 2, 2)
-			
-			-- if the animation is beginning, the title will lost the alpha value and the vector representation will be drawn on the square
-			if playingAnimations and algorithmSelected[(j + i * 3) + 1] then
-			
-				-- drawing vector representation and making the actual animation for each sorting algorithm selected
-				sortingAlgorithms.sortingAnimation(40 + i * 240, 140 + j * 150, (j + i * 3) + 1)
-				
-				-- setting the new alpha
-				love.graphics.setColor(255, 255, 255, alpha)
-			else
-				love.graphics.setColor(255, 255, 255)
-			end
-			
-			-- algorithm name
-			love.graphics.printf(algorithm[(j + i * 3) + 1], 40 + i * 240, 180 + j * 150, 230, "center")
-	
+	for i = 0, #algorithm - 1 do
+		--animation
+		love.graphics.setColor(0, 0, 0)
+		if x > 40 + i * 250 and x < 260 + i * 250 and y > (height/2) - 75 and y < (height/2) + 75 then
+			love.graphics.rectangle("line", 40 + i * 250, (height/2) - 75, 220, 150, 15, 15)
 		end
+		
+		-- show which algorithm is selected
+		if algorithmSelected[i] == true then
+			love.graphics.rectangle("line", 40 + i * 250, (height/2) - 75, 220, 150, 15, 15)
+		end
+		
+		-- square for each algorithm
+		love.graphics.setColor(200, 200, 200)
+		love.graphics.rectangle("fill", 40 + i * 250, (height/2) - 75, 220, 150, 15, 15)
+		
+		-- if the animation is beginning, the title will lost the alpha value and the vector representation will be drawn on the square
+		if playingAnimations and algorithmSelected[i] then
+		
+			-- drawing vector representation and making the actual animation for each sorting algorithm selected
+			sortingAlgorithms.sortingAnimation(40 + i * 250, i+1)
+			
+			--setting the new alpha
+			love.graphics.setColor(255, 255, 255, alpha)
+		else
+			love.graphics.setColor(255, 255, 255)
+		end
+		
+		-- algorithm name
+		love.graphics.printf(algorithm[i+1], 40 + i * 250 - 90, (height/2) - 25, 400, "center")
 	end
 end
 
