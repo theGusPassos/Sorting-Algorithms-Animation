@@ -4,16 +4,17 @@ local M = {}
 -- main vector
 mainVec = {}
 
--- check if all animations are being played
-
-
 -- each algorithm index to draw the square
 index = {1, 1, 1, 1, 1, 1, 1, 1, 1}
 
--- vector where bubble sort will be applied
+-- vector for each algorithm
 bubbleVec = {}
--- x and y from bubble sort
-bVar = {1, 1}
+selectionVec = {}
+insertionVec = {}
+-- x and y for each algorithm
+bVar = {0, 1}
+sVar = {1, 1}
+iVar = {1, 1}
 
 -- size of the table
 vecSize = 35
@@ -28,14 +29,28 @@ function sortingAnimation(x, y, algorithm)
 	end
 	
 	-- graph base
-	love.graphics.setColor(0, 0, 0, alphaII)
+	love.graphics.setColor(0, 0, 0, alphaII)	
 	love.graphics.rectangle("fill", x + 10, y + 110, 210, 5)
+	
+	if maxtemp == nil then
+		maxtemp = bubbleVec[1]
+	end
+	
+	love.graphics.print(maxtemp)
+
 	
 	-- drawing bars for every algorithm selected
 	if algorithm == 1 then
 		drawBars(bubbleVec, index[1], x, y)
 		bubbleSort(bubbleVec, 1)
+	elseif algorithm == 2 then
+		drawBars(selectionVec, index[2], x, y)
+		selectionSort(selectionVec, 2)
+	elseif algorithm == 3 then
+		drawBars(insertionVec, index[3], x, y)
+		insertionSort(insertionVec, 3)
 	end
+	
 	
 end
 
@@ -61,36 +76,114 @@ function fillVect(sortType)
 		for i = 1, vecSize do
 			mainVec[i] = math.random(0, 50)
 		end
+	else
+	-- creating a decreasing vec
+		mainVec[1] = 50
+		for i = 2, vecSize do
+			mainVec[i] = mainVec[i - 1] - math.random(0, 3)
+			
+			if(mainVec[i] < 0) then
+				mainVec[i] = 0
+			end
+		end
 	end
 	
 	-- when the main vect is full, his value will be passed for the other ones
-	bubbleVec = mainVec
+	for i = 1, 50 do
+		bubbleVec[i] = mainVec[i]
+		selectionVec[i] = mainVec[i]
+		insertionVec[i] = mainVec[i]
+	end
 end
 
--- bubble sort function
+
 -- This function is using ifs and elses so it can change only one position at time, so the user can see what is going on in the vector
+
+-- bubble sort function
 function bubbleSort (vec, ind)
 	
 	-- bVar[2] is equal to y and bVar[1] to x. 
 
-	if bVar[2] < #vec - (bVar[1] + 1) + 1 then
+	if bVar[2] < #vec - 1 then
 		bVar[2] = bVar[2] + 1
-	elseif bVar[1] < #vec - 1 then
+	elseif bVar[1] < #vec then
 		bVar[2] = 1
 		bVar[1] = bVar[1] + 1
 	else
-		-- when reach this, the loop is finished
 		finishedAnimation = true
 	end
 	
-	if vec[bVar[2]] > vec[bVar[2]+1] then
+	if vec[bVar[2]] > vec[bVar[2]+1] and bVar[2] < #vec then
 		index[ind] = bVar[2]
 							
-		temp = vec[bVar[2]+1]
+		bTemp = vec[bVar[2]+1]
 		vec[bVar[2]+1] = vec[bVar[2]]
-		vec[bVar[2]] = temp
+		vec[bVar[2]] = bTemp
 	end	
+end
+
+-- selection sort
+function selectionSort (vec, ind)
 	
+	if sVar[2] == 1 then
+		sVar[2] = sVar[1] + 1
+	end
+	
+	if mi == nil then
+		mi = sVar[1]
+	end
+	
+	if sVar[2] < #vec then -- inside for
+		sVar[2] = sVar[2] + 1
+	elseif sVar[1] < #vec - 1 then -- outside for
+		sVar[1] = sVar[1] + 1
+		mi = sVar[1]
+		sVar[2] = sVar[1] + 1
+	end
+	
+	index[ind] = sVar[2]
+	
+	if vec[sVar[2]] < vec[mi] then -- finding the min in the inside for
+		mi = sVar[2]
+	end
+		
+	if sVar[2] == #vec and playingAnimations then -- doing after the inside for is over
+		if sVar[1] ~= mi then
+			sTemp = vec[sVar[1]]
+			vec[sVar[1]] = vec[mi]
+			vec[mi] = sTemp
+		end
+	end
+end
+
+-- insertion sort
+function insertionSort (vec, ind)
+	
+	-- starting vars
+	if iTemp == nil then
+		
+		iVar[1] = 2
+		iVar[2] = iVar[1] - 1
+		iTemp = vec[iVar[1]]
+		
+	end
+	
+	if iVar[2] >= 1 and vec[iVar[2]] > iTemp then -- inside while loop
+		vec[iVar[2] + 1] = vec[iVar[2]]
+		iVar[2] = iVar[2] - 1
+		
+		index[ind] = iVar[2]
+		
+	else
+		vec[iVar[2] + 1] = iTemp
+		
+		if iVar[1] < #vec then -- outside loop
+			
+			iVar[1] = iVar[1] + 1
+			iVar[2] = iVar[1] - 1
+			iTemp = vec[iVar[1]]
+		end
+	end
 end
 	
 
@@ -106,16 +199,17 @@ function reset()
 	-- reset every var from the algorithm loop
 	for i = 1, 2 do
 		bVar[i] = 1
+		sVar[i] = 1
 	end
 	
 	-- reset the alpha
 	alphaII = 0
-	
+		
 	-- reset animations triggers
 	playingAnimations = false
-	-- one because is the only one working right now - FX
 	finishedAnimation = false
-	
+
+
 end
 
 -- declaring to use in another lua file

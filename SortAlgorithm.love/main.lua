@@ -7,7 +7,7 @@ Using Love2D engine for games
 by GusPassos]]--
 
 name = "Sorting Algorithm Animation"
-x
+
 --getting the screen size
 width = love.graphics.getWidth()
 height = love.graphics.getHeight()
@@ -15,14 +15,9 @@ height = love.graphics.getHeight()
 -- loading another lua file
 local sortingAlgorithms = require("sortingAlgorithms")
 
---[[
-	0 = menu
-	1 = choosing algorithm
-]]--
-screenIndex = 0
-
 -- how te vector will be randomized
 vectorType = 1
+vecTypeName = {"Random", "Decreasing"}
 
 -- if the animation is beeing played
 playingAnimations = false
@@ -31,7 +26,7 @@ playingAnimations = false
 alpha = 255
 
 -- algorithms in this program
-algorithm = {"Bubble Sort", "x", "x", "x", "x", "x", "x", "x", "x"}
+algorithm = {"Bubble Sort", "Selection Sort", "Insertion Sort", "x", "x", "x", "x", "x", "x"}
 
 -- which one is already selected
 algorithmSelected = {false, false, false,
@@ -63,11 +58,8 @@ end
 
 -- drawing on the screen
 function love.draw()
-	if screenIndex == 0 then
-		drawFirstScreen()
-	elseif screenIndex == 1 then
-		drawAnimationScreen()
-	end
+	
+	drawAnimationScreen()
 	
 	-- "click to reset"
 	if finishedAnimation then
@@ -89,14 +81,8 @@ end
 
 -- if a mouse event happen, this will catch the mouse position and make the tests
 function love.mousepressed(x, y, button)
-
-	-- choose algorithm button
-	if x > (width / 2) - 150 and x < (width / 2) + 150 and y > 310 and y < 370 then
-		screenIndex = 1
-		
-	end
 	
-	if screenIndex == 1 and not playingAnimations then
+	if not playingAnimations then
 		-- if any of the algorithms is choosen
 		for i = 0, (#algorithm / 3) - 1 do
 			for j = 0, (#algorithm / 3) - 1 do
@@ -114,6 +100,15 @@ function love.mousepressed(x, y, button)
 		selectAll()
 	end
 	
+	-- select vect type button
+	if x > (width / 2) - 100 and x < (width / 2) + 100 and y > 90 and y < 120 then
+		if vectorType == 2 then
+			vectorType = 1
+		elseif vectorType == 1 then
+			vectorType = 2
+		end
+	end
+	
 	-- play button
 	if x > width - 150 and x < width - 50 and y > 45 and y < 80 and not playingAnimations then 
 		sortingAlgorithms.fillVect(vectorType)
@@ -124,47 +119,6 @@ function love.mousepressed(x, y, button)
 		sortingAlgorithms.reset()
 	end
 	
-end
-
--- this screen has a border that changes color when the mouse moves, a button that starts the program and
--- a subtle animation that occours when the mouse moves - This animation is the actual sorting process, but with
--- a different style
-function drawFirstScreen()
-	
-	-- back rect with color change related to mouse position	
-	love.graphics.setColor(x / 3, 0, y / 3)
-	love.graphics.rectangle("line", 20, 20, width - 40, height - 40, 10, 10)
-
-	-- title
-	love.graphics.setColor(0, 0, 0)
-	love.graphics.setFont(titleFont)
-	love.graphics.printf(name, (width / 2) - (titleFont:getWidth(name) / 2), 150, 600, "center")
-
-	-- button animation
-	if x > (width / 2) - 150 and x < (width / 2) + 150 and y > 310 and y < 370 then
-		love.graphics.setColor(0, 0, 0)
-		love.graphics.rectangle("line", (width / 2) - 150, 310, 300, 60, 10, 10)
-	end
-	
-	-- draw button
-	love.graphics.setColor(200, 200, 200)
-	love.graphics.rectangle("fill", (width / 2) - 150, 310, 300, 60, 10, 10)
-	
-	-- button text
-	love.graphics.setFont(buttonFont)
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.printf("Choose Algorithms", (width / 2) - 220, 315, 440, "center")
-
-	
-	-- made by rect
-	love.graphics.setColor(255, 255, 255)
-	love.graphics.rectangle("fill", width - 125, height - 30, 150, 150)
-	
-	-- made by text
-	love.graphics.setColor(0, 0, 0)
-	love.graphics.setFont(madeByFont)
-	love.graphics.printf("by: Gus Passos", width - 220, height - 30, 300, "center")
-		
 end
 
 -- this shows 9 sorting algorithms, selecting one of those and pressing the play button will start the animation showing how the vector is being reorganized by this algorithm
@@ -209,6 +163,19 @@ function drawAnimationScreen()
 	-- select vector type
 	love.graphics.setColor(200, 200, 200)
 	love.graphics.rectangle("fill", (width / 2) - 100, 90, 200, 30, 15, 15)
+	
+	-- select vector type text
+	love.graphics.setColor(0, 0, 0)
+	love.graphics.printf("vector type:", (width / 2) - 225, 90, 500)
+	
+	-- vector type animation
+	if x > (width / 2) - 100 and x < (width / 2) + 100 and y > 90 and y < 120 then
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.rectangle("line", (width / 2) - 100, 90, 200, 30, 15, 15)
+	end
+	
+	-- show vector type selected
+	love.graphics.printf(vecTypeName[vectorType], ((width / 2) - 100) + 100 - selectAllFont:getWidth(vecTypeName[vectorType]) / 2, 90, 400)
 	
 	-- drawing options
 	drawOptions()
