@@ -1,7 +1,7 @@
 --[[ 
 
 Sorting Algorithm Animation - showing with graphs how sorting algorithms works
-+Using Love2D engine for games
++Using Love2D engine for games.
 
 
 by GusPassos
